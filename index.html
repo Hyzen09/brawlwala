@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Brawlhalla Web: Clash of Legends</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="game-container">
+    <canvas id="gameCanvas" width="1280" height="720"></canvas>
+
+    <!-- Character Select Overlay -->
+    <div id="characterSelectScreen" class="screen-overlay active">
+      <div class="screen-header">
+        <h1 class="game-title">BRAWLHALLA</h1>
+        <div class="game-subtitle">CLASH OF LEGENDS • 7 FIGHTERS</div>
+      </div>
+
+      <div class="selection-grid-container">
+        <div class="player-panel" id="p1-panel">
+          <div class="player-tag">PLAYER 1</div>
+          <div class="portrait-preview" id="p1-preview"></div>
+          <div class="legend-name" id="p1-name">BÖDVAR</div>
+          <div class="legend-title" id="p1-title">The Bear Warrior</div>
+          <div class="legend-weapons" id="p1-weapons">⚔️ Greatsword & 🔨 Hammer</div>
+          <div class="stat-bars" id="p1-stats"></div>
+          <div class="legend-desc" id="p1-desc"></div>
+        </div>
+
+        <div class="character-roster">
+          <div class="roster-header">SELECT YOUR LEGEND</div>
+          <div class="roster-grid" id="rosterGrid">
+            <!-- 7 Character cards dynamically populated -->
+          </div>
+
+          <div class="match-settings">
+            <div class="setting-group">
+              <label>Game Mode:</label>
+              <select id="modeSelect">
+                <option value="vs_ai">1P vs CPU</option>
+                <option value="pvp">2P Local Battle</option>
+                <option value="training">Training / Lab</option>
+              </select>
+            </div>
+            <div class="setting-group" id="cpuDifficultyGroup">
+              <label>CPU Difficulty:</label>
+              <select id="difficultySelect">
+                <option value="easy">Recruit (Easy)</option>
+                <option value="normal" selected>Warrior (Normal)</option>
+                <option value="hard">Valhalla Champ (Hard)</option>
+              </select>
+            </div>
+            <div class="setting-group">
+              <label>Stocks (Lives):</label>
+              <select id="stocksSelect">
+                <option value="1">1 Stock (Sudden Death)</option>
+                <option value="3" selected>3 Stocks (Standard)</option>
+                <option value="5">5 Stocks (Long Match)</option>
+              </select>
+            </div>
+          </div>
+
+          <button id="startFightBtn" class="brawl-btn main-btn">BRAWL!</button>
+        </div>
+
+        <div class="player-panel" id="p2-panel">
+          <div class="player-tag" id="p2-tag">PLAYER 2 (CPU)</div>
+          <div class="portrait-preview" id="p2-preview"></div>
+          <div class="legend-name" id="p2-name">HATTORI</div>
+          <div class="legend-title" id="p2-title">The Demon Bride</div>
+          <div class="legend-weapons" id="p2-weapons">🗡️ Dual Katars & ⚔️ Katana</div>
+          <div class="stat-bars" id="p2-stats"></div>
+          <div class="legend-desc" id="p2-desc"></div>
+        </div>
+      </div>
+
+      <div class="controls-guide">
+        <div class="guide-box">
+          <strong>P1 Controls:</strong> <kbd>A</kbd>/<kbd>D</kbd> Move • <kbd>W</kbd> Jump (Tap again in air to Double Jump) • <kbd>S</kbd> Fast-Fall/Drop • <kbd>J</kbd> Light Attack • <kbd>K</kbd> Heavy Sig • <kbd>L</kbd> Dodge / Dash
+        </div>
+        <div class="guide-box">
+          <strong>P2 Controls (PvP):</strong> <kbd>◀</kbd>/<kbd>▶</kbd> Move • <kbd>▲</kbd> Jump • <kbd>▼</kbd> Drop • <kbd>1</kbd> Light • <kbd>2</kbd> Heavy Sig • <kbd>3</kbd> Dodge
+        </div>
+      </div>
+    </div>
+
+    <!-- In-Game HUD -->
+    <div id="gameHud" class="hud-overlay">
+      <div class="hud-left">
+        <div class="hud-card" id="hudP1">
+          <div class="hud-avatar" id="hudP1Avatar"></div>
+          <div class="hud-info">
+            <div class="hud-name" id="hudP1Name">Bödvar</div>
+            <div class="hud-stocks" id="hudP1Stocks"></div>
+          </div>
+          <div class="damage-display" id="hudP1Damage">0%</div>
+        </div>
+      </div>
+
+      <div class="match-timer" id="matchTimer">03:00</div>
+
+      <div class="hud-right">
+        <div class="hud-card" id="hudP2">
+          <div class="damage-display" id="hudP2Damage">0%</div>
+          <div class="hud-info">
+            <div class="hud-name" id="hudP2Name">Hattori</div>
+            <div class="hud-stocks" id="hudP2Stocks"></div>
+          </div>
+          <div class="hud-avatar" id="hudP2Avatar"></div>
+        </div>
+      </div>
+
+      <!-- In-game controls HUD prompt -->
+      <div class="ingame-hints" id="ingameHints">
+        <span><kbd>A</kbd>/<kbd>D</kbd> Move</span>
+        <span><kbd>L</kbd> Ground Dash / Air Dodge / Chase Dodge</span>
+        <span><kbd>W</kbd> Jump (Float & Wall Jump)</span>
+        <span><kbd>S</kbd> Fast-Fall / Drop</span>
+        <span><kbd>J</kbd> Light (DLight Combo Starter)</span>
+        <span><kbd>K</kbd> Heavy Sig</span>
+        <span><kbd>W</kbd>+<kbd>K</kbd> Recovery</span>
+        <span><kbd>S</kbd>+<kbd>K</kbd> Ground Pound</span>
+        <span><kbd>H</kbd> Hitboxes</span>
+      </div>
+    </div>
+
+    <!-- Victory Screen -->
+    <div id="victoryScreen" class="screen-overlay">
+      <div class="victory-card">
+        <div class="victory-crown">👑</div>
+        <h2 id="winnerText" class="winner-title">BÖDVAR WINS!</h2>
+        <div class="winner-subtitle">VALHALLA CHAMPION</div>
+        <div class="match-stats" id="matchStats"></div>
+        <div class="victory-buttons">
+          <button id="rematchBtn" class="brawl-btn">REMATCH</button>
+          <button id="characterSelectBtn" class="brawl-btn secondary-btn">CHARACTER SELECT</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pause Screen -->
+    <div id="pauseScreen" class="screen-overlay">
+      <div class="pause-card">
+        <h2>GAME PAUSED</h2>
+        <button id="resumeBtn" class="brawl-btn">RESUME</button>
+        <button id="restartBtn" class="brawl-btn secondary-btn">RESTART MATCH</button>
+        <button id="quitBtn" class="brawl-btn secondary-btn">QUIT TO MENU</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>

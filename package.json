@@ -1,0 +1,19 @@
+{
+  "name": "brawlhalla-web",
+  "version": "1.0.0",
+  "description": "Brawlhalla Web: Clash of Legends - 7 Unique Characters in a Web Browser Platform Fighter",
+  "main": "src/main.js",
+  "type": "module",
+  "scripts": {
+    "start": "npx serve . -l 3000",
+    "dev": "npx serve . -l 3000"
+  },
+  "keywords": [
+    "brawlhalla",
+    "platform-fighter",
+    "canvas",
+    "game"
+  ],
+  "author": "",
+  "license": "MIT"
+}
